@@ -1,4 +1,4 @@
-# DesafioGazinTech
+# Desafio Gazin <Tech> Full Stack
 
 Olá! 
 
