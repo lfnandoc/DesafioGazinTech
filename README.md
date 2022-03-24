@@ -8,7 +8,7 @@ Este é a minha entrada para o Desafio FullStack da Gazin <Tech>: https://github
 
 Também disponibilizei uma imagem docker com a aplicação toda rodando localmente: https://hub.docker.com/r/lfnandoc/gazintechdesafio
 
-A aplicação foi feita com o frontend em React e o backend em .Net Core, com banco de dados MySQL.
+A aplicação foi feita com o frontend em React e o backend em .Net Core, com banco de dados MySQL. Consiste em um sistema de cadastro/edição de níveis e desenvolvedores. 
 
 Eu já tinha experiência com .NET, porém não muita com .Net Core e aplicações que possuem backend e frontend separados. 
 
