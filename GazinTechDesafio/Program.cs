@@ -10,6 +10,7 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseHsts();
+    app.Urls.Add($"http://*:5050");
 }
 
 if (app.Environment.IsProduction())
@@ -18,7 +19,7 @@ if (app.Environment.IsProduction())
     app.Urls.Add($"http://*:{port}");
 }
 
-app.Urls.Add($"http://*:5050");
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
