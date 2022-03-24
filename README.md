@@ -1,8 +1,8 @@
-# Desafio Gazin <Tech> Full Stack
+# Desafio Gazin Tech Full-Stack
 
 Olá! 
 
-Este é a minha entrada para o Desafio FullStack da Gazin Tech: https://github.com/gazin-tech/Desafio-FullStack
+Este é a minha entrada para o Desafio FullStack da Gazin <Tech>: https://github.com/gazin-tech/Desafio-FullStack
 
 É possível acessar o projeto rodando aqui, hospedado por Heroku: http://gazintech.lfnandoc.net/
 
