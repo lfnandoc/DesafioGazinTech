@@ -10,7 +10,7 @@ namespace GazinTechDesafio.Entities
         Outro = 2
     }
 
-    public class Desenvolvedor : EntityBase
+    public class Desenvolvedor : Entity
     {
         [Column("genero")]
         public Genero Genero { get; set; }
@@ -22,9 +22,12 @@ namespace GazinTechDesafio.Entities
         public string? Hobby { get; set; }
 
         [Column("nivel")]
-        public int Nivel { get; set; }            
+        public int Nivel { get; set; }
 
-        public string? NivelName { get => new Nivel().GetById(Nivel)?.Nome; }
+        [Column("nome")]
+        public string? Nome { get; set; }
+
+        public string? NivelNome { get; set; }
 
 
         public Desenvolvedor() : base()
@@ -38,7 +41,9 @@ namespace GazinTechDesafio.Entities
             DataDeNascimento = (DateTime)dataRow["dataDeNascimento"];
             Nivel = Convert.ToInt32(dataRow["nivel"]);
             Hobby = dataRow["hobby"].ToString();
-            Genero = (Genero)Convert.ToInt32(dataRow["genero"]);            
-        }
+            Genero = (Genero)Convert.ToInt32(dataRow["genero"]);
+            Nome = dataRow["nome"].ToString();
+            NivelNome = ((Nivel?)new Nivel().GetById(Nivel))?.Nome;
+        }       
     }
 }

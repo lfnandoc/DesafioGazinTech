@@ -3,7 +3,7 @@ import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLi
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
 
-const navBarTitle = 'Desafio Gazin <Tech>';
+const navBarTitle = 'Desafio Gazin <Tech> - FullStack';
 
 const navBarItems = [
     { link: "/", text: "Home" },
@@ -38,7 +38,7 @@ export class NavMenu extends Component {
                         <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
                             <ul className="navbar-nav flex-grow">
                                 {navBarItems.map((navItem, index) => (
-                                    <NavItem>
+                                    <NavItem key={index}>
                                         <NavLink tag={Link} className="text-dark" to={navItem.link}> {navItem.text} </NavLink>
                                     </NavItem>
                                 ))}

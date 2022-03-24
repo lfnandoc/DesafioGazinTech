@@ -15,10 +15,22 @@ namespace GazinTechDesafio.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        public IEnumerable<Nivel> Get()
+        [HttpGet("count")]
+        public int GetCount([FromQuery] string query)
+        {
+            return new Nivel().GetEntityCount(query);
+        }
+
+        [HttpGet("all")]
+        public IEnumerable<Nivel> GetAll()
         {
             return new Nivel().GetAllMapped().OfType<Nivel>();
+        }
+
+        [HttpGet("paginated/{page}")]
+        public IEnumerable<Nivel> Get(int page, [FromQuery] string query)
+        {
+            return new Nivel().GetAllMappedAndPaginated(page, 6, query).OfType<Nivel>();
         }
 
         [HttpGet("{id}")]
@@ -36,7 +48,22 @@ namespace GazinTechDesafio.Controllers
         public IActionResult Post(Nivel nivel)
         {           
             if(nivel.Save())
-                return Ok();
+                return StatusCode(201);
+
+            return BadRequest();
+        }
+
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var nivelOnDb = (Nivel?) new Nivel().GetById(id);
+
+            if (nivelOnDb?.DesenvolvedoresAssociados > 0)
+                return StatusCode(501);
+
+            if (nivelOnDb?.Delete() == true)
+                return NoContent();
 
             return BadRequest();
         }

@@ -1,8 +1,10 @@
+using GazinTechDesafio.Entities;
+using GazinTechDesafio.Infra;
+
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
 builder.Services.AddControllersWithViews();
+
+AppConfiguration.ConnectionString = builder.Configuration.GetValue<string>("ConnectionString");
 
 var app = builder.Build();
 

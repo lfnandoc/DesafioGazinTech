@@ -1,4 +1,5 @@
 ﻿using GazinTechDesafio.Infra;
+using Microsoft.Extensions.Options;
 using System.Data;
 using System.Linq;
 using System.Reflection;
@@ -6,17 +7,15 @@ using System.Text;
 
 namespace GazinTechDesafio.Entities
 {
-    public class EntityBase : IEntity
+    public class Entity : IEntity
     {
         [Column("id")]
-        public int Id { get; set; }
-
-        [Column("nome")]
-        public string? Nome { get; set; }
+        public int Id { get; set; }      
 
         protected string? table { get; set; }
 
-        public EntityBase()
+
+        public Entity()
         {
             Id = -2;
         }
@@ -25,7 +24,7 @@ namespace GazinTechDesafio.Entities
         {
             var query = new StringBuilder()
                 .Append($"DELETE FROM {table}")
-                .Append($"WHERE id = {Id}")
+                .Append($" WHERE id = {Id}")
                 .ToString();
 
             return new DBConnection().Execute(query) > 0;
@@ -34,7 +33,6 @@ namespace GazinTechDesafio.Entities
         public virtual void MapEntity(DataRow dataRow)
         {
             Id = Convert.ToInt32(dataRow["id"]);
-            Nome = dataRow["nome"].ToString();
         }
 
         public bool IdAlreadyExists(int id)
@@ -102,6 +100,48 @@ namespace GazinTechDesafio.Entities
                     yield return entity;
             }
         }
+        public int GetEntityCount(string queryParam = "")
+        {
+            var query = new StringBuilder()
+                .Append($"SELECT COUNT(*) FROM {table}");
+
+            if (queryParam != "" && queryParam != "none")
+            {
+                var filter = (ReplaceQuotes(queryParam)).Split('|');
+                query.Append($" WHERE {filter[0]} like '%{filter[1]}%'");
+            }
+
+            var result = new DBConnection().SelectScalar(query.ToString());
+
+            return Convert.ToInt32(result);
+        }
+
+        public IEnumerable<IEntity> GetAllMappedAndPaginated(int currentPage, int itemsPerPage, string queryParam = "")
+        {
+            var offset = (currentPage * itemsPerPage) - (itemsPerPage);
+            var limit = (itemsPerPage);
+            var query = new StringBuilder()
+                .Append($"SELECT * FROM {table}");
+
+            if(queryParam != "" && queryParam != "none")
+            {                
+                var filter = (ReplaceQuotes(queryParam)).Split('|');
+                query.Append($" WHERE {filter[0]} like '%{filter[1]}%'");
+            }
+
+                query.Append($" LIMIT {limit} OFFSET {offset} ");
+
+            var result = new DBConnection().Select(query.ToString()).Rows;
+
+            foreach (DataRow dataRow in result)
+            {
+                var entity = (IEntity?)Activator.CreateInstance(GetType());
+                entity?.MapEntity(dataRow);
+
+                if (entity != null)
+                    yield return entity;
+            }
+        }
 
         public bool Save()
         {
@@ -116,12 +156,12 @@ namespace GazinTechDesafio.Entities
             try
             {
                 var properties = GetType().GetProperties().Where(property => property.Name != "Id");
-                SetupColumnsToUpdate(properties, out List<string> columnsToUpdate, out List<string> valuesToUpdate);
+                SetupColumnsToUpdate(properties, out Dictionary<string, string> valuesToUpdate);
 
                 var query = new StringBuilder()
                     .Append($"INSERT INTO {table}")
-                    .Append($" ({string.Join(',', columnsToUpdate)}) ")
-                    .Append($"VALUES ({string.Join(',', valuesToUpdate)}) ");
+                    .Append($" ({string.Join(',', valuesToUpdate.Keys)}) ")
+                    .Append($"VALUES ({string.Join(',', valuesToUpdate.Values)}) ");
 
                 Id = new DBConnection().ExecuteAndReturnLastId(query.ToString());
 
@@ -138,18 +178,17 @@ namespace GazinTechDesafio.Entities
             try
             {
                 var properties = GetType().GetProperties().Where(property => property.Name != "Id");
-                SetupColumnsToUpdate(properties, out List<string> columnsToUpdate, out List<string> valuesToUpdate);
+                SetupColumnsToUpdate(properties, out Dictionary<string, string> valuesToUpdate);
 
                 var query = new StringBuilder()
                     .Append($"UPDATE {table}")
                     .Append(" SET ");
 
                 var updates = new StringBuilder();
-                foreach (var (value, index) in columnsToUpdate.Select((v, i) => (v, i)))
-                {
-                    updates.Append($" {value} = {valuesToUpdate[index]},");
-                }
 
+                foreach (var valueToUpdate in valuesToUpdate) 
+                    updates.Append($" {valueToUpdate.Key} = {valueToUpdate.Value},");
+                
                 query.Append(updates.ToString().TrimEnd(','))
                      .Append($" WHERE id = {Id}");
 
@@ -163,10 +202,9 @@ namespace GazinTechDesafio.Entities
             }
         }
 
-        private bool SetupColumnsToUpdate(IEnumerable<PropertyInfo> properties, out List<string> columnsToUpdate, out List<string> valuesToUpdate)
+        private bool SetupColumnsToUpdate(IEnumerable<PropertyInfo> properties, out Dictionary<string, string> valuesToUpdate)
         {
-            columnsToUpdate = new List<String>();
-            valuesToUpdate = new List<String>();
+            valuesToUpdate = new Dictionary<string, string>();
 
             foreach (var property in properties)
             {
@@ -176,38 +214,42 @@ namespace GazinTechDesafio.Entities
                 if (column == null || propertyValue == null)
                     continue;
 
-                columnsToUpdate.Add(column.ColumnName);
 
                 if (property.PropertyType.IsEnum)
                 {
-                    valuesToUpdate.Add(Convert.ToInt32(propertyValue).ToString());
+                    valuesToUpdate.Add(column.ColumnName, Convert.ToInt32(propertyValue).ToString());
                     continue;
                 }
 
                 if (propertyValue is string propertyValueAsString)
                 {
-                    valuesToUpdate.Add($"\'{propertyValueAsString}\'");
+                    valuesToUpdate.Add(column.ColumnName, $"\'{ReplaceQuotes(propertyValueAsString)}\'");
                     continue;
                 }
 
                 if (propertyValue is int propertyValueAsInt)
                 {
-                    valuesToUpdate.Add(propertyValueAsInt.ToString());
+                    valuesToUpdate.Add(column.ColumnName, propertyValueAsInt.ToString());
                     continue;
                 }
 
                 if (propertyValue is DateTime propertyValueAsDateTime)
                 {
-                    valuesToUpdate.Add($"\'{propertyValueAsDateTime.ToString("yyyy-MM-dd")}\'");
+                    valuesToUpdate.Add(column.ColumnName, $"\'{propertyValueAsDateTime.ToString("yyyy-MM-dd")}\'");
                     continue;
                 }
 
-                valuesToUpdate.Add($"\'{propertyValue}\'");
+                valuesToUpdate.Add(column.ColumnName,$"\'{ReplaceQuotes(propertyValue.ToString())}\'");
 
             }
 
-            return columnsToUpdate.Any();               
+            return valuesToUpdate.Any();               
 
+        }
+
+        private string ReplaceQuotes(string text)
+        {
+            return text.Replace("'", "''").Replace("\"", "\\\"");
         }
 
     }
