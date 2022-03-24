@@ -1,5 +1,4 @@
 ﻿using GazinTechDesafio.Infra;
-using Microsoft.Extensions.Options;
 using System.Data;
 using System.Text;
 

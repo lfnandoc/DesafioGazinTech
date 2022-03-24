@@ -1,4 +1,3 @@
-using GazinTechDesafio.Entities;
 using GazinTechDesafio.Infra;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +8,7 @@ AppConfiguration.ConnectionString = builder.Configuration.GetValue<string>("Conn
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
-{  
+{
     app.UseHsts();
 }
 
@@ -18,6 +17,8 @@ if (app.Environment.IsProduction())
     var port = Environment.GetEnvironmentVariable("PORT");
     app.Urls.Add($"http://*:{port}");
 }
+
+app.Urls.Add($"http://*:5050");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

@@ -1,7 +1,5 @@
 ﻿using GazinTechDesafio.Infra;
-using Microsoft.Extensions.Options;
 using System.Data;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -10,7 +8,7 @@ namespace GazinTechDesafio.Entities
     public class Entity : IEntity
     {
         [Column("id")]
-        public int Id { get; set; }      
+        public int Id { get; set; }
 
         protected string? table { get; set; }
 
@@ -70,7 +68,7 @@ namespace GazinTechDesafio.Entities
         }
 
         private IEntity? SelectAndMap(string query)
-        {         
+        {
             var result = new DBConnection().Select(query).Rows;
 
             if (result.Count > 0)
@@ -96,7 +94,7 @@ namespace GazinTechDesafio.Entities
                 var entity = (IEntity?)Activator.CreateInstance(GetType());
                 entity?.MapEntity(dataRow);
 
-                if(entity != null)
+                if (entity != null)
                     yield return entity;
             }
         }
@@ -123,13 +121,13 @@ namespace GazinTechDesafio.Entities
             var query = new StringBuilder()
                 .Append($"SELECT * FROM {table}");
 
-            if(queryParam != "" && queryParam != "none")
-            {                
+            if (queryParam != "" && queryParam != "none")
+            {
                 var filter = (ReplaceQuotes(queryParam)).Split('|');
                 query.Append($" WHERE {filter[0]} like '%{filter[1]}%'");
             }
 
-                query.Append($" LIMIT {limit} OFFSET {offset} ");
+            query.Append($" LIMIT {limit} OFFSET {offset} ");
 
             var result = new DBConnection().Select(query.ToString()).Rows;
 
@@ -186,9 +184,9 @@ namespace GazinTechDesafio.Entities
 
                 var updates = new StringBuilder();
 
-                foreach (var valueToUpdate in valuesToUpdate) 
+                foreach (var valueToUpdate in valuesToUpdate)
                     updates.Append($" {valueToUpdate.Key} = {valueToUpdate.Value},");
-                
+
                 query.Append(updates.ToString().TrimEnd(','))
                      .Append($" WHERE id = {Id}");
 
@@ -239,11 +237,11 @@ namespace GazinTechDesafio.Entities
                     continue;
                 }
 
-                valuesToUpdate.Add(column.ColumnName,$"\'{ReplaceQuotes(propertyValue.ToString())}\'");
+                valuesToUpdate.Add(column.ColumnName, $"\'{ReplaceQuotes(propertyValue.ToString())}\'");
 
             }
 
-            return valuesToUpdate.Any();               
+            return valuesToUpdate.Any();
 
         }
 

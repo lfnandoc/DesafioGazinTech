@@ -1,6 +1,5 @@
 ﻿using GazinTechDesafio.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace GazinTechDesafio.Controllers
 {
@@ -46,8 +45,8 @@ namespace GazinTechDesafio.Controllers
 
         [HttpPost]
         public IActionResult Post(Nivel nivel)
-        {           
-            if(nivel.Save())
+        {
+            if (nivel.Save())
                 return StatusCode(201);
 
             return BadRequest();
@@ -57,7 +56,7 @@ namespace GazinTechDesafio.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var nivelOnDb = (Nivel?) new Nivel().GetById(id);
+            var nivelOnDb = (Nivel?)new Nivel().GetById(id);
 
             if (nivelOnDb?.DesenvolvedoresAssociados > 0)
                 return StatusCode(501);

@@ -44,6 +44,6 @@ namespace GazinTechDesafio.Entities
             Genero = (Genero)Convert.ToInt32(dataRow["genero"]);
             Nome = dataRow["nome"].ToString();
             NivelNome = ((Nivel?)new Nivel().GetById(Nivel))?.Nome;
-        }       
+        }
     }
 }
