@@ -7,6 +7,7 @@ Este é a minha entrada para o Desafio FullStack da Gazin <Tech>: https://github
 É possível acessar o projeto rodando aqui, hospedado por Heroku: http://gazintech.lfnandoc.net/
 
 Também disponibilizei uma imagem docker com a aplicação toda rodando localmente: https://hub.docker.com/r/lfnandoc/gazintechdesafio
+  (Recomendo rodar com configuração -p 4000:5050)
 
 A aplicação foi feita com o frontend em React e o backend em .Net Core, com banco de dados MySQL. Consiste em um sistema de cadastro/edição de níveis e desenvolvedores. 
 
