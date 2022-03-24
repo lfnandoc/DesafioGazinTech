@@ -16,7 +16,7 @@ Foi a minha primeira vez usando React, e como experimentei bastante, é possíve
 
 O backend foi a parte que mais tenho orgulho, pois consegui programar um sistema de entidades bem interessante, que faz a conexão com o banco de dados ser mais centralizada. Os objetos que extendem a classe de entidade podem ter um atributo especial (Column) em suas propriedades, que definem que é um campo que pode ser atualizado no banco.
 
-Também foi a primeira vez que compilei uma imagem do Docker, que facilitou bastante a hospedagem no Heroku. 
+Também foi a primeira vez que compilei uma imagem do Docker, que facilitou bastante a hospedagem no Heroku. Se for rodar localmente a solução, lembrar de usar o npm install na pasta ClientApp.
 
 Foi uma grande experiência de aprendizado, e basicamente meu modo de trabalho é este, gosto de aprender conforme programo.
 
