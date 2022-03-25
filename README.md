@@ -11,7 +11,7 @@ Também disponibilizei uma imagem docker com a aplicação toda rodando localmen
 
 A aplicação foi feita com o frontend em React e o backend em .Net Core, com banco de dados MySQL. Consiste em um sistema de cadastro/edição de níveis e desenvolvedores. 
 
-Eu já tinha experiência com .NET, porém não muita com .Net Core e aplicações que possuem backend e frontend separados. 
+Eu já tinha experiência com .NET, porém não muita com .Net Core e aplicações que possuem backend e frontend separados. O esqueleto inicial foi um template fornecido pela Microsoft disponível no Visual Studio.
 
 Foi a minha primeira vez usando React, e como experimentei bastante, é possível ver umas diferenças entre os componentes criados, pois fui ajustando a metodologia conforme o resultado que queria atingir. Acredito que para um primeiro contato com a lib, consegui absorver muita coisa, incluindo o uso de libs externas conforme fui precisando.
 
